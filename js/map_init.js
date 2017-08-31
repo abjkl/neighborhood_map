@@ -29,7 +29,6 @@ $.ajax({
     }
 });
 
-
 /* ======= View Model of the List (Use Knockoutjs)======= */
 
 // Create the station list on the left,within the the element with the id of  "station-list"
@@ -101,7 +100,6 @@ var listView = {
     }
 };
 
-
 /* ======= View Model of the Map ======= */
 
 var map;
@@ -133,21 +131,14 @@ var initMap = function(){
             id: i
         });
         markers.push(marker);
-
-        // make every marker can be clicked;
-        marker.addListener('click', function () {
-            populateInfoWindow(this, largeInfowindow);
-
-        });
-
-        // sert markers on the map;
+        addClickListener(marker);
          markers[i].setMap(map);
          bounds.extend(markers[i].position);
+
     }
     map.fitBounds(bounds);
 
 };
-
 
 /* ======= Handle popup of the Information Window ======= */
 
@@ -169,6 +160,12 @@ var populateInfoWindow = function (marker, infowindow) {
                 infowindow.marker = null;
             });
         }
+};
+
+var addClickListener = function (marker) {
+    marker.addListener('click', function () {
+        populateInfoWindow(this, largeInfowindow);
+    });
 };
 
 /* ======= Start! ======= */

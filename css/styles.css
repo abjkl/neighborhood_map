@@ -1,0 +1,134 @@
+@media screen and (min-width: 1000px) {
+    .options-box{display: inline-block}
+    #nav,#map {left: 25%}
+}
+
+@media screen and (max-width: 1001px) {
+    .options-box{display: none}
+    #nav,#map {left: 0}
+}
+
+
+html, body {
+    font-family: Arial, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    height: 100%;
+    position: relative;
+    min-height: 1550px;
+    min-width: 600px;
+}
+
+.options-box {
+    background: #000;
+    height: 100%;
+    line-height: 30px;
+    padding: 0;
+    text-align: left;
+    width: 25%;
+}
+
+.map-box{
+    height: 100%;
+    width: 75%;
+    display: inline-block;
+    float: right;
+}
+
+input {
+    font-size: 12px;
+}
+
+h1 {
+    color: #ffffff;
+    font-size: 24px;
+    margin: 0px 0 10px 0;
+    padding-top: 10px;
+    text-align: center;
+    font-weight: 600;
+}
+
+
+h2 {
+    color: #000;
+    font-size: 24px;
+    margin: 0px 0 10px 0;
+    padding-top: 10px;
+    font-weight: 600;
+}
+
+
+#map {
+    bottom:0px;
+    height: 92%;
+    position: absolute;
+    width: 100%;
+    right: 0px;
+    top: 7.5%;
+}
+
+
+#nav {
+    bottom:0px;
+    height: 7%;
+    position: absolute;
+    right: 0px;
+    width: 100%;
+    top: 0;
+    background: #000000;
+}
+
+
+
+a {
+    color: #CCC;
+}
+
+li {
+    list-style: none;
+}
+
+ul {
+    padding-left: 0;
+}
+
+.staions{
+    padding-left: 10px;
+}
+
+input{
+    width: 70%;
+    height: 30px;
+    max-width:250px ;
+}
+
+.filter{
+    width: 60px;
+    height: 35px;
+    border: none;
+    background: #ccc;
+}
+
+
+.icon{
+    border: none;
+    background: #000;
+    height: 89%;
+    width: 50px;
+    padding: 0;
+}
+
+.fa-reorder{
+    color: #fff;
+}
+
+.clear{clear: both}
+
+#error{
+    color: #fff;
+    font-size: 24px;
+}

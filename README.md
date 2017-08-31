@@ -28,7 +28,7 @@ The Bart station is get from ```www.bart.gov ```, who supply the coders with api
 ## How to use
 
 ### Load the map
-1. **Make sure you have download the files in the  repository **
+1. Make sure you have download ** all **  the files in the  repository。
 2. Open the index.html with your browser.(Chrome, Safari, Firefox or IE10 above.
 
 ### Show markers' information

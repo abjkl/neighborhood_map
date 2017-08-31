@@ -1,6 +1,6 @@
 # neighborhood_map
 
-neighborhood_map is the 5th project for Full Stack Web Developer course.
+**neighborhood_map** is the 5th project for Full Stack Web Developer course.
 
 ## Browsers & Enviorment & Frameworks
 
@@ -38,7 +38,7 @@ There are two ways to show marker's information.
 
 ### Filter the stations
 You can input whatever you want to search the station you want. The result will show after you click the __Filter__ button.
-__Please notice__ that the input is  case-sensitive, which means 'Station A' is different from "station a";
+__Please notice__ that the input is  case-sensitive, which means ```Station A``` is different from ```station a```;
 
 ### API request error
 If the API form BART load for more than 5 second, there will be a notice on the nav part of the webpage.

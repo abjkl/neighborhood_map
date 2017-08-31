@@ -13,10 +13,10 @@ $.ajax({
 
         var st = data.root.stations.station;
         for (i=0;i<st.length;i++){
-            var l = new Object();
+          	var l = {};
             l.station = st[i].name;
             l.address = st[i].address+','+st[i].city;
-            l.location = new Object();
+            l.location = {};
             l.location.lat=+ st[i].gtfs_latitude;
             l.location.lng=+ st[i].gtfs_longitude;
             locations.push(l);
@@ -25,7 +25,7 @@ $.ajax({
     },
     error: function () {
         // alert ("Cannot load data!")
-        $('#error').text("Can not load BART information")
+        $('#error').text("Can not load BART information");
     }
 });
 
@@ -47,8 +47,8 @@ var listView = {
 			    var stations = [];
 			    for (i=0;i<self.locationData.length;i++){
 			        var s = self.locationData[i].station;
-			        stations.push(s)
-                };
+			        stations.push(s);
+                }
                 var id = stations.indexOf(station);
                 return id;
 
@@ -57,7 +57,7 @@ var listView = {
         self.showInfowWindow = function (data, event) {
             var s = data.station;
             var i = self.id(s);
-            populateInfoWindow(markers[i], largeInfowindow)
+            populateInfoWindow(markers[i], largeInfowindow);
         };
 
         self. listSearch=function(data,event){
@@ -82,7 +82,7 @@ var listView = {
             // filter the markers;
             for (var m = 0; m < list.length; m++) {
                 var i = list[m];
-                markers[i].setMap(null)
+                markers[i].setMap(null);
             }
         };
 
@@ -97,7 +97,7 @@ var listView = {
             $('#nav').css("left","0");
             $('#map').css("left","0");
         }
-        }
+        };
     }
 };
 
@@ -142,8 +142,8 @@ var initMap = function(){
 
         // sert markers on the map;
          markers[i].setMap(map);
-         bounds.extend(markers[i].position)
-    };
+         bounds.extend(markers[i].position);
+    }
     map.fitBounds(bounds);
 
 };

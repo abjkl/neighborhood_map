@@ -28,7 +28,7 @@ The Bart station is get from ```www.bart.gov ```, who supply the coders with api
 ## How to use
 
 ### Load the map
-1. Make sure you have download ** all **  the files in the  repository。
+1. Make sure you have download __ all __  the files in the  repository。
 2. Open the index.html with your browser.(Chrome, Safari, Firefox or IE10 above.
 
 ### Show markers' information
@@ -37,8 +37,8 @@ There are two ways to show marker's information.
 2. Click the station's name on the left hand list.
 
 ### Filter the stations
-You can input whatever you want to search the station you want. The result will show after you click the ** Filter ** button.
-** Please notice ** that the input is  case-sensitive, which means 'Station A' is different from "station a";
+You can input whatever you want to search the station you want. The result will show after you click the __ Filter __ button.
+__ Please notice __ that the input is  case-sensitive, which means 'Station A' is different from "station a";
 
 ### API request error
 If the API form BART load for more than 5 second, there will be a notice on the nav part of the webpage.

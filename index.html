@@ -12,10 +12,13 @@
         <div class="container">
 
             <!--The list part-->
-            <div class="options-box">
+
+            <div class="options-box" data-bind="visible: showStationList">
+
                 <h1>Bart Locations</h1>
                 <div class="staions">
-                    <input type="text" id="station-search">
+                    <input type="text" id="station-search" data-bind="value: searchInput, valueUpdate: 'afterkeydown'">
+                    <p data-bind="text: charactersRemaining"></p>
                     <button class="filter" data-bind="event: { click: listSearch}">Filter</button>
                     <ul data-bind="foreach: locationData">
                         <li data-bind="attr:{id: $index}"><a href="#" data-bind="text: station, event: { click: $parent.showInfowWindow}"></a></li>
@@ -23,8 +26,9 @@
                 </div>
             </div>
 
+
             <!--The map part-->
-            <div class="map-box">
+            <div class="map-box" data-bind="style: { left: showStationList() ? '25%' : '0' }">
                 <div id="nav">
                     <button class="icon" data-bind="event: { click: listWrap}"><i class="fa fa-reorder fa-2x"></i></button>
                     <span id="error"><span>

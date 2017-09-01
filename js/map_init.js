@@ -82,6 +82,16 @@ var listView = {
             populateInfoWindow(markers[i], largeInfowindow);
         };
 
+
+
+        self.searchInput = ko.observable('');
+
+        self.maxCharacters = 140;
+
+        self.charactersRemaining = ko.computed(function() {
+				return self.searchInput();
+			});
+
         self. listSearch=function(data,event){
             // set every stations be visible first before start the search.
             $("li").css("display", "block");
@@ -109,17 +119,14 @@ var listView = {
             }
         };
 
-        self.listWrap = function (data,event) {
-            if ($('.options-box').is(':hidden')){
-            $('.options-box').show();
-            $('#nav').css("left","25%");
-            $('#map').css("left","25%");
+
+        self.showStationList = ko.observable(true);
+
+        if(document.body.clientWidth < 1000){
+            self.showStationList(false)
         }
-        else {
-            $('.options-box').hide();
-            $('#nav').css("left","0");
-            $('#map').css("left","0");
-        }
+        self.listWrap= function() {
+				self.showStationList(!self.showStationList());
         };
     }
 };

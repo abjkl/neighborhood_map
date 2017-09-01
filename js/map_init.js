@@ -3,31 +3,54 @@
 
 var locations=[];
 var bartUrl = "http://api.bart.gov/api/stn.aspx?cmd=stns&key=ZQZS-58I3-92RT-DWE9&json=y";
+var googleKey ="AIzaSyDd6IZjJsgH8GSkk2lTa98v1cFzT8kb3uY";
+var googleUrl = "https://maps.googleapis.com/maps/api/js?key="+googleKey+"&v=3&callback=initMap";
 
-$.ajax({
-    timeout : 5000,
-    type:"GET",
-    url: bartUrl,
-    dataType: "json",
-    success:function (data) {
+var getBartData= function(){
+    $.ajax({
+        timeout : 5000,
+        type:"GET",
+        url: bartUrl,
+        dataType: "json",
+        success:function (data) {
 
-        var st = data.root.stations.station;
-        for (i=0;i<st.length;i++){
-          	var l = {};
-            l.station = st[i].name;
-            l.address = st[i].address+','+st[i].city;
-            l.location = {};
-            l.location.lat=+ st[i].gtfs_latitude;
-            l.location.lng=+ st[i].gtfs_longitude;
-            locations.push(l);
+            var st = data.root.stations.station;
+            for (i=0;i<st.length;i++){
+                var l = {};
+                l.station = st[i].name;
+                l.address = st[i].address+','+st[i].city;
+                l.location = {};
+                l.location.lat=+ st[i].gtfs_latitude;
+                l.location.lng=+ st[i].gtfs_longitude;
+                locations.push(l);
+            }
+         googleApi();
+         listView.init();
+        },
+        error: function () {
+            // alert ("Cannot load data!")
+            $('#error').text("Can not load BART information:(");
         }
-        init();
-    },
-    error: function () {
-        // alert ("Cannot load data!")
-        $('#error').text("Can not load BART information");
-    }
-});
+    });
+};
+
+/* ======= Get Googlemap's JS API ======= */
+
+var googleApi = function () {
+    $.ajax({
+        timeout : 5000,
+        type:"GET",
+        url: googleUrl,
+        dataType: "script",
+        success: function () {
+            initMap();
+        },
+        error: function () {
+            $('#error').text("Can not load google's API :(");
+        }
+    });
+};
+
 
 /* ======= View Model of the List (Use Knockoutjs)======= */
 
@@ -62,6 +85,7 @@ var listView = {
         self. listSearch=function(data,event){
             // set every stations be visible first before start the search.
             $("li").css("display", "block");
+            setmarkers(markers);
 
 
             // get input's value
@@ -132,10 +156,8 @@ var initMap = function(){
         });
         markers.push(marker);
         addClickListener(marker);
-         markers[i].setMap(map);
-         bounds.extend(markers[i].position);
-
     }
+    setmarkers(markers);
     map.fitBounds(bounds);
 
 };
@@ -168,10 +190,15 @@ var addClickListener = function (marker) {
     });
 };
 
+
+var setmarkers = function (markers) {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(map);
+            bounds.extend(markers[i].position);
+            map.fitBounds(bounds);
+        }
+    };
+
 /* ======= Start! ======= */
 
-var init = function() {
-    initMap();
-    listView.init();
-
-};
+getBartData();

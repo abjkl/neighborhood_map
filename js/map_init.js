@@ -62,11 +62,14 @@ var listView = {
 
         self.locationData = ko.observableArray([]);
 
-        for( x in locations) {
+        self.mapLocations = function () {
+            self.locationData.removeAll();
+            for( x in locations) {
             self.locationData.push(locations[x])
-        }
+            }
+        };
 
-
+        self.mapLocations();
 
         self.showInfowWindow = function (data, event) {
             var i = data.id;
@@ -77,15 +80,16 @@ var listView = {
 
 
         self.listSearch=function (data,event) {
-            $("li").css("display", "block");
+            self.locationData.removeAll();
             setmarkers(markers);
             for (var i = 0; i < locations.length; i++) {
                 var input = self.searchInput().toLowerCase();
                 var station = locations[i].station.toLowerCase();
-                if (station.match(input) == null) {
-                    var id = '#' + i;
-                    $(id).css("display", "none");
+                if (station.toLowerCase().indexOf(input.toLowerCase()) < 0) {
                     markers[i].setMap(null);
+                }
+                else {
+                    self.locationData.push(locations[i])
                 }
             }
         };

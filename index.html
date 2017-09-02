@@ -20,7 +20,7 @@
                     <input type="text" id="station-search" data-bind="value: searchInput, valueUpdate: 'afterkeydown'">
                     <button class="filter" data-bind="event: { click: listSearch}">Filter</button>
                     <ul data-bind="foreach: locationData">
-                        <li data-bind="attr:{id: $index}"><a href="#" data-bind="text: station, event: { click: $parent.showInfowWindow}"></a></li>
+                        <li data-bind="attr:{id: id}"><a href="#" data-bind="text: station, event: { click: $parent.showInfowWindow}"></a></li>
                     </ul>
                 </div>
             </div>

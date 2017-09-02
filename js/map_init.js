@@ -58,7 +58,7 @@ var listView = {
     },
     ViewModel: function () {
         var self = this;
-        self.locationData = locations;
+        self.locationData = ko.observableArray(locations);
 
         self.showInfowWindow = function (data, event) {
             var i = data.id;
@@ -66,6 +66,7 @@ var listView = {
         };
 
         self.searchInput = ko.observable('');
+        
 
         self.listSearch=function (data,event) {
             $("li").css("display", "block");

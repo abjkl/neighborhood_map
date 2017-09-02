@@ -1,9 +1,11 @@
 var locations = [];
 var bartUrl = "http://api.bart.gov/api/stn.aspx?cmd=stns&key=ZQZS-58I3-92RT-DWE9&json=y";
 var googleUrl = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDd6IZjJsgH8GSkk2lTa98v1cFzT8kb3uY&v=3&callback=initMap";
+var error ="";
 
 
 /* ======= Get Google Map's JS API ======= */
+
 
 var googleApi = function () {
     $.ajax({
@@ -12,7 +14,7 @@ var googleApi = function () {
         url: googleUrl,
         dataType: "script",
         error: function () {
-           listView.ViewModel.googleMapError();
+           error="Can not load google's API :(";
         }
     });
 };
@@ -41,7 +43,8 @@ var getBartData = function () {
                 listView.init();
             },
             error: function () {
-                listView.ViewModel.bartError();
+            alert ("yes");
+                error="Can not load BART information:(";
             }
     });
 };
@@ -51,7 +54,8 @@ var getBartData = function () {
 
 var listView = {
     init: function () {
-            ko.applyBindings(new listView.ViewModel());
+            viewModel = new listView.ViewModel();
+            ko.applyBindings(viewModel);
         },
         ViewModel: function () {
             var self = this;
@@ -99,14 +103,15 @@ var listView = {
             };
 
             // Error information
-            self.error = ko.observable('');
+            self.error = ko.observable(error);
+
 
             self.bartError = function () {
-                self.error("Can not load BART information:(")
+                self.error="Can not load BART information:("
             };
 
             self.googleMapError = function () {
-                self.error("Can not load google's API :(")
+                self.error="Can not load google's API :("
             };
 
         }

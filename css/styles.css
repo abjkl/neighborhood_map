@@ -63,6 +63,7 @@ h2 {
     position: absolute;
     right: 0px;
     top: 0;
+    width: auto;
     background: #000000;
 }
 
@@ -117,5 +118,15 @@ input{
 #error{
     color: #fff;
     font-size: 24px;
+}
+
+#alert {
+    position:fixed;
+    top:4%;
+    left:50%;
+    transform:translateX(-50%) translateY(-50%);
+    background: #000;
+    border: 1px;
+
 }
 

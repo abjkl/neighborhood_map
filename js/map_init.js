@@ -1,108 +1,115 @@
-var locations=[];
+var locations = [];
 var bartUrl = "http://api.bart.gov/api/stn.aspx?cmd=stns&key=ZQZS-58I3-92RT-DWE9&json=y";
 var googleUrl = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDd6IZjJsgH8GSkk2lTa98v1cFzT8kb3uY&v=3&callback=initMap";
 
 
-/* ======= Get Googlemap's JS API ======= */
+/* ======= Get Google Map's JS API ======= */
 
 var googleApi = function () {
     $.ajax({
-        timeout : 10000,
-        type:"GET",
+        timeout: 10000,
+        type: "GET",
         url: googleUrl,
         dataType: "script",
         error: function () {
-            $('#error').text("Can not load google's API :(");
+           listView.ViewModel.googleMapError();
         }
     });
 };
 
 /* ======= Get Bart Station's Data From API ======= */
 
-var getBartData= function(){
+var getBartData = function () {
     $.ajax({
-        timeout : 10000,
-        type:"GET",
+        timeout: 10000,
+        type: "GET",
         url: bartUrl,
         dataType: "json",
-        success:function (data) {
+        success: function (data) {
 
-            var st = data.root.stations.station;
-            for (i=0;i<st.length;i++){
-                var l = {};
-                l.station = st[i].name;
-                l.address = st[i].address+','+st[i].city;
-                l.location = {};
-                l.location.lat=+ st[i].gtfs_latitude;
-                l.location.lng=+ st[i].gtfs_longitude;
-                l.id = i;
-                locations.push(l);
+                var st = data.root.stations.station;
+                for (i = 0; i < st.length; i++) {
+                    var l = {};
+                    l.station = st[i].name;
+                    l.address = st[i].address + ',' + st[i].city;
+                    l.location = {};
+                    l.location.lat = +st[i].gtfs_latitude;
+                    l.location.lng = +st[i].gtfs_longitude;
+                    l.id = i;
+                    locations.push(l);
+                }
+                listView.init();
+            },
+            error: function () {
+                listView.ViewModel.bartError();
             }
-         listView.init();
-        },
-        error: function () {
-            // alert ("Cannot load data!")
-            $('#error').text("Can not load BART information:(");
-        }
     });
 };
 
 /* ======= View Model of the List (Use Knockoutjs)======= */
 
-// Create the station list on the left,within the the element with the id of  "station-list"
-
-
 
 var listView = {
     init: function () {
-        ko.applyBindings(new listView.ViewModel());
-    },
-    ViewModel: function () {
-        var self = this;
+            ko.applyBindings(new listView.ViewModel());
+        },
+        ViewModel: function () {
+            var self = this;
 
-        self.locationData = ko.observableArray([]);
+            // The station list click callback
+            self.showInfowWindow = function (data, event) {
+                var i = data.id;
+                populateInfoWindow(markers[i], largeInfowindow);
+            };
 
-        self.mapLocations = function () {
-            self.locationData.removeAll();
-            for( x in locations) {
-            self.locationData.push(locations[x])
-            }
-        };
+            // The station list generation
+            self.locationData = ko.observableArray([]);
 
-        self.mapLocations();
-
-        self.showInfowWindow = function (data, event) {
-            var i = data.id;
-            populateInfoWindow(markers[i], largeInfowindow);
-        };
-
-        self.searchInput = ko.observable('');
-
-
-        self.listSearch=function (data,event) {
-            self.locationData.removeAll();
-            setmarkers(markers);
-            for (var i = 0; i < locations.length; i++) {
-                var input = self.searchInput().toLowerCase();
-                var station = locations[i].station.toLowerCase();
-                if (station.toLowerCase().indexOf(input.toLowerCase()) < 0) {
-                    markers[i].setMap(null);
+            self.mapLocations = function () {
+                self.locationData.removeAll();
+                for (x in locations) {
+                    self.locationData.push(locations[x])
                 }
-                else {
-                    self.locationData.push(locations[i])
+            };
+            self.mapLocations();
+
+            // The filter function
+            self.searchInput = ko.observable('');
+            self.listSearch = function (data, event) {
+                self.locationData.removeAll();
+                setmarkers(markers);
+                for (var i = 0; i < locations.length; i++) {
+                    var input = self.searchInput().toLowerCase();
+                    var station = locations[i].station.toLowerCase();
+                    if (station.toLowerCase().indexOf(input.toLowerCase()) < 0) {
+                        markers[i].setMap(null);
+                    } else {
+                        self.locationData.push(locations[i])
+                    }
                 }
+            };
+
+            // Station list wrap or not
+            self.showStationList = ko.observable(true);
+            if (document.body.clientWidth < 1000) {
+                self.showStationList(false);
             }
-        };
+            self.listWrap = function () {
+                self.showStationList(!self.showStationList());
+            };
 
-        self.showStationList = ko.observable(true);
+            // Error information
+            self.error = ko.observable('');
 
-        if(document.body.clientWidth < 1000){
-            self.showStationList(false);
+            self.bartError = function () {
+                self.error("Can not load BART information:(")
+            };
+
+            self.googleMapError = function () {
+                self.error("Can not load google's API :(")
+            };
+
         }
-        self.listWrap= function() {
-				self.showStationList(!self.showStationList());
-        };
-    }
 };
 
 /* ======= View Model of the Map ======= */
@@ -112,11 +119,14 @@ var markers = [];
 var largeInfowindow;
 var bounds;
 
-var initMap = function(){
+var initMap = function () {
     largeInfowindow = new google.maps.InfoWindow();
     bounds = new google.maps.LatLngBounds();
     map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 37.8332977, lng: -122.3588496},
+        center: {
+            lat: 37.8332977,
+            lng: -122.3588496
+        },
         zoom: 12,
         styles: styles,
         mapTypeControl: false
@@ -149,22 +159,21 @@ var initMap = function(){
 
 var populateInfoWindow = function (marker, infowindow) {
     if (marker.getAnimation() !== null) {
-                marker.setAnimation(null);
-    }
-    else {
+        marker.setAnimation(null);
+    } else {
         marker.setAnimation(google.maps.Animation.BOUNCE);
-        setTimeout(function() {
+        setTimeout(function () {
             marker.setAnimation(null);
-            }, 1480);
+        }, 1400);
     }
     if (infowindow.marker != marker) {
-            infowindow.marker = marker;
-            infowindow.setContent('<div><h2>' + marker.lable + '</h2><p>' + marker.title + '</p></div>');
-            infowindow.open(map, marker);
-            infowindow.addListener('closeclick', function () {
-                infowindow.marker = null;
-            });
-        }
+        infowindow.marker = marker;
+        infowindow.setContent('<div><h2>' + marker.lable + '</h2><p>' + marker.title + '</p></div>');
+        infowindow.open(map, marker);
+        infowindow.addListener('closeclick', function () {
+            infowindow.marker = null;
+        });
+    }
 };
 
 var addClickListener = function (marker) {
@@ -174,16 +183,16 @@ var addClickListener = function (marker) {
 };
 
 var setmarkers = function (markers) {
-        for (var i = 0; i < markers.length; i++) {
-            markers[i].setMap(map);
-            bounds.extend(markers[i].position);
-            map.fitBounds(bounds);
-        }
-    };
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+        bounds.extend(markers[i].position);
+        map.fitBounds(bounds);
+    }
+};
 
 /* ======= Start! ======= */
 
-var init = function() {
+var init = function () {
     getBartData();
     googleApi();
 };

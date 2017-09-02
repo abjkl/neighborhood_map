@@ -51,14 +51,22 @@ var getBartData= function(){
 
 // Create the station list on the left,within the the element with the id of  "station-list"
 
+
+
 var listView = {
     init: function () {
         ko.applyBindings(new listView.ViewModel());
-        // octopus.search()
     },
     ViewModel: function () {
         var self = this;
-        self.locationData = ko.observableArray(locations);
+
+        self.locationData = ko.observableArray([]);
+
+        for( x in locations) {
+            self.locationData.push(locations[x])
+        }
+
+
 
         self.showInfowWindow = function (data, event) {
             var i = data.id;
@@ -66,14 +74,14 @@ var listView = {
         };
 
         self.searchInput = ko.observable('');
-        
+
 
         self.listSearch=function (data,event) {
             $("li").css("display", "block");
             setmarkers(markers);
             for (var i = 0; i < locations.length; i++) {
                 var input = self.searchInput().toLowerCase();
-                var station = locations[i].name.toLowerCase();
+                var station = locations[i].station.toLowerCase();
                 if (station.match(input) == null) {
                     var id = '#' + i;
                     $(id).css("display", "none");

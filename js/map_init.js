@@ -1,14 +1,27 @@
+var locations=[];
+var bartUrl = "http://api.bart.gov/api/stn.aspx?cmd=stns&key=ZQZS-58I3-92RT-DWE9&json=y";
+var googleUrl = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDd6IZjJsgH8GSkk2lTa98v1cFzT8kb3uY&v=3&callback=initMap";
+
+
+/* ======= Get Googlemap's JS API ======= */
+
+var googleApi = function () {
+    $.ajax({
+        timeout : 10000,
+        type:"GET",
+        url: googleUrl,
+        dataType: "script",
+        error: function () {
+            $('#error').text("Can not load google's API :(");
+        }
+    });
+};
 
 /* ======= Get Bart Station's Data From API ======= */
 
-var locations=[];
-var bartUrl = "http://api.bart.gov/api/stn.aspx?cmd=stns&key=ZQZS-58I3-92RT-DWE9&json=y";
-var googleKey ="AIzaSyDd6IZjJsgH8GSkk2lTa98v1cFzT8kb3uY";
-var googleUrl = "https://maps.googleapis.com/maps/api/js?key="+googleKey+"&v=3&callback=initMap";
-
 var getBartData= function(){
     $.ajax({
-        timeout : 5000,
+        timeout : 10000,
         type:"GET",
         url: bartUrl,
         dataType: "json",
@@ -22,9 +35,9 @@ var getBartData= function(){
                 l.location = {};
                 l.location.lat=+ st[i].gtfs_latitude;
                 l.location.lng=+ st[i].gtfs_longitude;
+                l.id = i;
                 locations.push(l);
             }
-         googleApi();
          listView.init();
         },
         error: function () {
@@ -33,24 +46,6 @@ var getBartData= function(){
         }
     });
 };
-
-/* ======= Get Googlemap's JS API ======= */
-
-var googleApi = function () {
-    $.ajax({
-        timeout : 5000,
-        type:"GET",
-        url: googleUrl,
-        dataType: "script",
-        success: function () {
-            initMap();
-        },
-        error: function () {
-            $('#error').text("Can not load google's API :(");
-        }
-    });
-};
-
 
 /* ======= View Model of the List (Use Knockoutjs)======= */
 
@@ -64,66 +59,32 @@ var listView = {
     ViewModel: function () {
         var self = this;
         self.locationData = locations;
-        console.info(self.locationData[1].station);
-        self.id = function (station) {
-			    var stations = [];
-			    for (i=0;i<self.locationData.length;i++){
-			        var s = self.locationData[i].station;
-			        stations.push(s);
-                }
-                var id = stations.indexOf(station);
-                return id;
-
-            };
 
         self.showInfowWindow = function (data, event) {
-            var s = data.station;
-            var i = self.id(s);
+            var i = data.id;
             populateInfoWindow(markers[i], largeInfowindow);
         };
 
-
-
         self.searchInput = ko.observable('');
 
-        self.maxCharacters = 140;
-
-        self.charactersRemaining = ko.computed(function() {
-				return self.searchInput();
-			});
-
-        self. listSearch=function(data,event){
-            // set every stations be visible first before start the search.
+        self.listSearch=function (data,event) {
             $("li").css("display", "block");
             setmarkers(markers);
-
-
-            // get input's value
-            var input = $('#station-search').val();
-
-            // filter the <li> element without input's value;
-            var arry = $("li:not(:contains('" + input + "'))");
-
-            // var arry = $("li:not(:contains('" + self.inputSearch + "'))");
-            arry.css("display", "none");
-            var list = [];
-            for (var n = 0; n < arry.length; n++) {
-                var id = arry.eq(n).attr('id');
-                list.push(id);
-            }
-
-            // filter the markers;
-            for (var m = 0; m < list.length; m++) {
-                var i = list[m];
-                markers[i].setMap(null);
+            for (var i = 0; i < locations.length; i++) {
+                var input = self.searchInput().toLowerCase();
+                var station = locations[i].name.toLowerCase();
+                if (station.match(input) == null) {
+                    var id = '#' + i;
+                    $(id).css("display", "none");
+                    markers[i].setMap(null);
+                }
             }
         };
-
 
         self.showStationList = ko.observable(true);
 
         if(document.body.clientWidth < 1000){
-            self.showStationList(false)
+            self.showStationList(false);
         }
         self.listWrap= function() {
 				self.showStationList(!self.showStationList());
@@ -161,8 +122,10 @@ var initMap = function(){
             animation: google.maps.Animation.DROP,
             id: i
         });
+        addClickListener(marker);
         markers.push(marker);
         addClickListener(marker);
+
     }
     setmarkers(markers);
     map.fitBounds(bounds);
@@ -197,7 +160,6 @@ var addClickListener = function (marker) {
     });
 };
 
-
 var setmarkers = function (markers) {
         for (var i = 0; i < markers.length; i++) {
             markers[i].setMap(map);
@@ -208,4 +170,9 @@ var setmarkers = function (markers) {
 
 /* ======= Start! ======= */
 
-getBartData();
+var init = function() {
+    getBartData();
+    googleApi();
+};
+
+init();

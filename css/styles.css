@@ -22,8 +22,6 @@ html, body {
 
 .map-box{
     height: 100%;
-    width: 75%;
-    display: inline-block;
     float: right;
 }
 
@@ -54,7 +52,6 @@ h2 {
     bottom:0px;
     height: 92%;
     position: absolute;
-    width: 100%;
     right: 0px;
     top: 7.5%;
 }
@@ -65,12 +62,13 @@ h2 {
     height: 7%;
     position: absolute;
     right: 0px;
-    width: 100%;
     top: 0;
     background: #000000;
 }
 
-#nav,#map {left: inherit}
+#nav,#map {
+    left: inherit;
+}
 
 a {
     color: #CCC;

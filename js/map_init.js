@@ -197,7 +197,7 @@ var setmarkers = function (markers) {
 
 var init = function () {
     getBartData();
-    googleApi()
+    googleApi();
 
 };
 

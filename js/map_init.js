@@ -1,6 +1,6 @@
 var locations = [];
 var bartUrl = "http://api.bart.gov/api/stn.aspx?cmd=stns&key=ZQZS-58I3-92RT-DWE9&json=y";
-var googleUrl = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDd6IZjJsgH8GSkk2lTa98v1cFzT8kb3uY&v=3&callback=initMap";
+var googleUrl = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDd6IZjJsgH8GSkk2lTa98v1cFzT8kb3uY&callback=initMap";
 
 
 /* ======= Set the error View Model   ======= */
@@ -20,6 +20,7 @@ var getBartData = function () {
     $.ajax({
         timeout: 10000,
         type: "GET",
+        async: false,
         url: bartUrl,
         dataType: "json",
         success: function (data) {
@@ -44,6 +45,7 @@ var getBartData = function () {
 
 var googleApi = function () {
     $.ajax({
+        async: false,
         timeout: 10000,
         type: "GET",
         url: googleUrl,
@@ -65,12 +67,6 @@ var listView = {
         ViewModel: function () {
             var self = this;
 
-            // The station list click callback
-            self.showInfowWindow = function (data, event) {
-                var i = data.id;
-                populateInfoWindow(markers[i], largeInfowindow);
-            };
-
             // The station list generation
             self.locationData = ko.observableArray([]);
             self.mapLocations = function () {
@@ -80,6 +76,12 @@ var listView = {
                 }
             };
             self.mapLocations();
+
+            // The station list click callback
+            self.showInfowWindow = function (data, event) {
+                var i = data.id;
+                populateInfoWindow(markers[i], largeInfowindow);
+            };
 
             // The filter function
             self.searchInput = ko.observable('');
@@ -138,6 +140,7 @@ var initMap = function () {
         var station = locations[i].station;
         var marker = new google.maps.Marker({
             position: position,
+            map: map,
             title: title,
             lable: station,
             animation: google.maps.Animation.DROP,
@@ -194,7 +197,8 @@ var setmarkers = function (markers) {
 
 var init = function () {
     getBartData();
-    googleApi();
+    googleApi()
+
 };
 
 init();

@@ -1,25 +1,20 @@
 var locations = [];
 var bartUrl = "http://api.bart.gov/api/stn.aspx?cmd=stns&key=ZQZS-58I3-92RT-DWE9&json=y";
 var googleUrl = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDd6IZjJsgH8GSkk2lTa98v1cFzT8kb3uY&v=3&callback=initMap";
-var error ="";
 
 
-/* ======= Get Google Map's JS API ======= */
+/* ======= Set the error View Model   ======= */
 
-
-var googleApi = function () {
-    $.ajax({
-        timeout: 10000,
-        type: "GET",
-        url: googleUrl,
-        dataType: "script",
-        error: function () {
-           error="Can not load google's API :(";
-        }
-    });
+var ApiErrorViewModel = function () {
+    var self = this;
+    self.error = ko.observable('');
 };
 
-/* ======= Get Bart Station's Data From API ======= */
+apiErrorViewModel = new ApiErrorViewModel();
+ko.applyBindings(apiErrorViewModel, document.getElementById('error'));
+
+
+/* ======= Get the Bart and  Googlemaps API  ======= */
 
 var getBartData = function () {
     $.ajax({
@@ -28,34 +23,44 @@ var getBartData = function () {
         url: bartUrl,
         dataType: "json",
         success: function (data) {
-
-                var st = data.root.stations.station;
-                for (i = 0; i < st.length; i++) {
-                    var l = {};
-                    l.station = st[i].name;
-                    l.address = st[i].address + ',' + st[i].city;
-                    l.location = {};
-                    l.location.lat = +st[i].gtfs_latitude;
-                    l.location.lng = +st[i].gtfs_longitude;
-                    l.id = i;
-                    locations.push(l);
-                }
-                listView.init();
-            },
-            error: function () {
-            alert ("yes");
-                error="Can not load BART information:(";
+            var st = data.root.stations.station;
+            for (i = 0; i < st.length; i++) {
+                var l = {};
+                l.station = st[i].name;
+                l.address = st[i].address + ',' + st[i].city;
+                l.location = {};
+                l.location.lat = +st[i].gtfs_latitude;
+                l.location.lng = +st[i].gtfs_longitude;
+                l.id = i;
+                locations.push(l);
             }
+            listView.init();
+        },
+        error: function () {
+            apiErrorViewModel.error("Can't load bart information :(  ");
+        }
     });
 };
 
-/* ======= View Model of the List (Use Knockoutjs)======= */
+var googleApi = function () {
+    $.ajax({
+        timeout: 10000,
+        type: "GET",
+        url: googleUrl,
+        dataType: "script",
+        error: function () {
+            apiErrorViewModel.error(" " + "Can not load Google Api :(  ");
+        }
+    });
+};
 
+
+/* ======= Create the list view  ======= */
 
 var listView = {
     init: function () {
-            viewModel = new listView.ViewModel();
-            ko.applyBindings(viewModel);
+            var viewModel = new listView.ViewModel();
+            ko.applyBindings(viewModel, document.getElementById('list'));
         },
         ViewModel: function () {
             var self = this;
@@ -68,11 +73,10 @@ var listView = {
 
             // The station list generation
             self.locationData = ko.observableArray([]);
-
             self.mapLocations = function () {
                 self.locationData.removeAll();
-                for (x in locations) {
-                    self.locationData.push(locations[x])
+                for (var i = 0; i < locations.length; i++) {
+                    self.locationData.push(locations[i]);
                 }
             };
             self.mapLocations();
@@ -88,7 +92,7 @@ var listView = {
                     if (station.toLowerCase().indexOf(input.toLowerCase()) < 0) {
                         markers[i].setMap(null);
                     } else {
-                        self.locationData.push(locations[i])
+                        self.locationData.push(locations[i]);
                     }
                 }
             };
@@ -102,22 +106,11 @@ var listView = {
                 self.showStationList(!self.showStationList());
             };
 
-            // Error information
-            self.error = ko.observable(error);
-
-
-            self.bartError = function () {
-                self.error="Can not load BART information:("
-            };
-
-            self.googleMapError = function () {
-                self.error="Can not load google's API :("
-            };
-
         }
 };
 
-/* ======= View Model of the Map ======= */
+
+/* ======= Create the Map ======= */
 
 var map;
 var markers = [];
@@ -160,6 +153,7 @@ var initMap = function () {
 
 };
 
+
 /* ======= Handle popup of the Information Window ======= */
 
 var populateInfoWindow = function (marker, infowindow) {
@@ -194,6 +188,7 @@ var setmarkers = function (markers) {
         map.fitBounds(bounds);
     }
 };
+
 
 /* ======= Start! ======= */
 

@@ -1,47 +1,56 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel=stylesheet type=text/css href="css/styles.css">
-        <link rel=stylesheet type=text/css href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-        <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-        <script src="js/knockout-3.4.2.js"></script>
-    </head>
-    <body>
-        <div class="container">
 
-            <!--The list part-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel=stylesheet type=text/css href="css/styles.css">
+    <link rel=stylesheet type=text/css href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="js/knockout-3.4.2.js"></script>
+</head>
 
-            <div class="options-box" data-bind="visible: showStationList">
+<body>
+    <div class="container" id="list">
 
-                <h1>Bart Locations</h1>
-                <div class="staions">
-                    <input type="text" data-bind="value: searchInput, valueUpdate: 'afterkeydown'">
-                    <button class="filter" data-bind="event: { click: listSearch}">Filter</button>
-                    <ul data-bind="foreach: locationData">
-                        <li data-bind="attr:{id: id}"><a href="#" data-bind="text: station, event: { click: $parent.showInfowWindow}"></a></li>
-                    </ul>
-                </div>
+        <!--The list part-->
+
+        <div class="options-box" data-bind="visible: showStationList">
+
+            <h1>Bart Locations</h1>
+            <div class="staions">
+                <input type="text" data-bind="value: searchInput, valueUpdate: 'afterkeydown'">
+                <button class="filter" data-bind="event: { click: listSearch}">Filter</button>
+                <ul data-bind="foreach: locationData">
+                    <li data-bind="attr:{id: id}">
+                        <a href="#" data-bind="text: station, event: { click: $parent.showInfowWindow}"></a>
+                    </li>
+                </ul>
             </div>
+        </div>
 
 
-            <!--The map part-->
-            <div class="map-box" data-bind="style: { left: showStationList() ? '25%' : '0' }">
-                <div id="nav">
-                    <button class="icon" data-bind="event: { click: listWrap}"><i class="fa fa-reorder fa-2x"></i></button>
+        <!--The map part-->
+        <div class="map-box" data-bind="style: { left: showStationList() ? '25%' : '0' }">
+            <div id="nav">
+                <button class="icon" data-bind="event: { click: listWrap}"><i class="fa fa-reorder fa-2x"></i>
+                </button>
 
-                </div>
-                <div id="map"></div>
             </div>
-            <div class="clear">
-            </div>
+            <div id="map"></div>
+        </div>
+        <div class="clear">
+        </div>
+    </div>
 
-            <div id ="alert"><p id="error">hahah</p></div>
+    <div id="error">
+        <p data-bind="text: error"></p>
+    </div>
 
 
     <script src="js/map_init.js"></script>
     <script type='text/javascript' src='js/mapstyles.js'></script>
 
-    </body>
+</body>
+
 </html>

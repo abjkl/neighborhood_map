@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
+    <title>Neighborhood Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel=stylesheet type=text/css href="css/styles.css">
     <link rel=stylesheet type=text/css href="css/font-awesome-4.7.0/css/font-awesome.min.css">
@@ -11,11 +12,10 @@
 </head>
 
 <body>
-    <div class="container" id="list">
+    <main class="container" id="list">
 
         <!--The list part-->
-
-        <div class="options-box" data-bind="visible: showStationList">
+        <aside class="options-box" data-bind="visible: showStationList">
 
             <h1>Bart Locations</h1>
             <div class="staions">
@@ -27,21 +27,20 @@
                     </li>
                 </ul>
             </div>
-        </div>
+        </aside>
 
 
         <!--The map part-->
         <div class="map-box" data-bind="style: { left: showStationList() ? '25%' : '0' }">
-            <div id="nav">
-                <button class="icon" data-bind="event: { click: listWrap}"><i class="fa fa-reorder fa-2x"></i>
+            <nav id="nav">
+                <button class="icon" data-bind="event: { click: listWrap}">
+                    <i class="fa fa-reorder fa-2x"></i>
                 </button>
-
-            </div>
+            </nav>
             <div id="map"></div>
         </div>
-        <div class="clear">
-        </div>
-    </div>
+        <div class="clear"></div>
+    </main>
 
     <div id="error">
         <p data-bind="text: error"></p>

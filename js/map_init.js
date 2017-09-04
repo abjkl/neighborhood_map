@@ -20,7 +20,6 @@ var getBartData = function () {
     $.ajax({
         timeout: 10000,
         type: "GET",
-        async: false,
         url: bartUrl,
         dataType: "json",
         success: function (data) {
@@ -35,7 +34,7 @@ var getBartData = function () {
                 l.id = i;
                 locations.push(l);
             }
-            listView.init();
+            googleApi();
         },
         error: function () {
             apiErrorViewModel.error("Can't load bart information :(  ");
@@ -45,11 +44,13 @@ var getBartData = function () {
 
 var googleApi = function () {
     $.ajax({
-        async: false,
         timeout: 10000,
         type: "GET",
         url: googleUrl,
         dataType: "script",
+        success: function (data) {
+            listView.init();
+        },
         error: function () {
             apiErrorViewModel.error(" " + "Can not load Google Api :(  ");
         }
@@ -159,9 +160,19 @@ var initMap = function () {
 
 /* ======= Handle popup of the Information Window ======= */
 
+var addClickListener = function (marker) {
+    marker.addListener('click', function () {
+        populateInfoWindow(this, largeInfowindow);
+    });
+};
+
 var populateInfoWindow = function (marker, infowindow) {
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function () {
+            marker.setAnimation(null);
+        }, 1400);
     } else {
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function () {
@@ -178,11 +189,7 @@ var populateInfoWindow = function (marker, infowindow) {
     }
 };
 
-var addClickListener = function (marker) {
-    marker.addListener('click', function () {
-        populateInfoWindow(this, largeInfowindow);
-    });
-};
+
 
 var setmarkers = function (markers) {
     for (var i = 0; i < markers.length; i++) {
@@ -197,8 +204,6 @@ var setmarkers = function (markers) {
 
 var init = function () {
     getBartData();
-    googleApi();
-
 };
 
 init();
